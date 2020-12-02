@@ -19,11 +19,14 @@ import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.ByteArrayInputStream;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SignatureValidator {
 
   private BouncyCastleProvider provider;
   private KeyStore ks;
+  private final Logger logger = LoggerFactory.getLogger(SignatureValidator.class);
 
   public SignatureValidator(String cert_path) {
     provider = new BouncyCastleProvider();
@@ -37,7 +40,7 @@ public class SignatureValidator {
       ks = KeyStore.getInstance(KeyStore.getDefaultType());
       ks.load(null, null);
     } catch (Exception e) {
-      System.out.println("Cannot open the certificate store");
+      logger.error("Cannot open the certificate store");
       return;
     }
 
@@ -45,14 +48,14 @@ public class SignatureValidator {
       return;
     }
     else {
-      System.out.println("Loading custom certificate: " + path);
+      logger.info(String.format("Loading custom certificate: %s",  path));
     }
 
     CertificateFactory fact;
     try {
       fact = CertificateFactory.getInstance("X.509");
     } catch (Exception e) {
-      System.out.println("Unable to create the Certificate Factor");
+      logger.error("Unable to create the Certificate Factor");
       return;
     }
 
@@ -60,7 +63,7 @@ public class SignatureValidator {
     try {
       crt_stream = new FileInputStream(path);
     } catch (Exception e) {
-      System.out.println("Unable to load cert.pem");
+      logger.error(String.format("Unable to load the certificate: %s", path));
       return;
     }
 
@@ -68,14 +71,14 @@ public class SignatureValidator {
     try {
       crt = fact.generateCertificate(crt_stream);
     } catch (Exception e) {
-      System.out.println("Unable to generate certificate from cert.pem");
+      logger.error(String.format("Unable to generate a certificate from %s", path));
       return;
     }
 
     try {
       ks.setCertificateEntry("unipi", crt);
     } catch (Exception e) {
-      System.out.println("Unable to store new certificate into the KeyStore");
+      logger.error("Unable to store new certificate into the KeyStore");
       return;
     }
   }
@@ -84,18 +87,11 @@ public class SignatureValidator {
     PdfReader reader;
     List<ValidationResult> results = new LinkedList<ValidationResult>();
 
-    // System.out.println(file);
-
     try {
-      // FileInputStream stream = new FileInputStream(file);
-      // String data = stream.read();
-      // InputStream stream = new ByteArrayInputStream(file.getBytes());
       reader = new PdfReader(stream);
     }
     catch(Exception e) {
-      System.out.printf("Error reading the given file\n");
-      // System.out.print(file);
-      System.out.println(e);
+      logger.error("Error while parsing the PDF file");
       return results;
     }
 

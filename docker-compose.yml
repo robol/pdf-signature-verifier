@@ -1,0 +1,9 @@
+version: '2.1'
+
+services:
+  pdfsignatureverifier:
+    build: .
+    ports:
+      - 8081:8081
+
+  
