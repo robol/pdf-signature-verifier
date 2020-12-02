@@ -9,6 +9,7 @@ import java.lang.System;
 import java.io.InputStream;
 import javax.servlet.http.Part;
 import javax.servlet.MultipartConfigElement;
+import java.io.ByteArrayInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,25 +41,17 @@ public class Server {
   }
 
   public static String validate(Request req, Response res) {
-    InputStream file;
-    try {
-      req.raw().setAttribute("org.eclipse.jetty.multipartConfig",
-        new MultipartConfigElement("/tmp", 100000000, 100000000, 1024));
+    ValidationInput input = ValidationInput.fromJSON(req.body());
 
-      file = req.raw().getPart("file").getInputStream();
-    }
-    catch (Exception e) {
-      logger.error("Error while reading the file");
-      return "[]";
-    }
-
-    if (file == null) {
+    if (input == null) {
       logger.error("Invalid request, with no file to check");
       return "[]";
     }
 
+    ByteArrayInputStream stream = new ByteArrayInputStream(input.data);
+    List<ValidationResult> result = validator.validate(stream);
+
     ObjectMapper mapper = new ObjectMapper();
-    List<ValidationResult> result = validator.validate(file);
 
     try {
       return mapper.writeValueAsString(result);
