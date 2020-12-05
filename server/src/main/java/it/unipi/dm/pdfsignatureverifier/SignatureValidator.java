@@ -2,24 +2,19 @@ package it.unipi.dm.pdfsignatureverifier;
 
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.AcroFields;
-import com.itextpdf.text.pdf.PdfName;
 import com.itextpdf.text.pdf.PdfDictionary;
 import com.itextpdf.text.pdf.security.PdfPKCS7;
-
 import java.io.File;
 import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
 import com.itextpdf.text.pdf.security.CertificateVerification;
 import com.itextpdf.text.pdf.security.VerificationException;
 import java.security.KeyStore;
-import java.util.Calendar;
 import java.security.Security;
 import java.security.cert.CertificateFactory;
 import java.util.List;
 import java.util.LinkedList;
 import java.io.InputStream;
 import java.io.FileInputStream;
-import java.io.ByteArrayInputStream;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

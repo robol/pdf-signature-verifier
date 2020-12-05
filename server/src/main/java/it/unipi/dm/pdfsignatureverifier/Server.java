@@ -57,7 +57,7 @@ public class Server {
       return mapper.writeValueAsString(result);
     }
     catch (Exception e) {
-      logger.error("Exception while convreting the data to JSON");
+      logger.error("Exception while converting the data to JSON");
       return "[]";
     }
   }
