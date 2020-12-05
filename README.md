@@ -45,6 +45,11 @@ be used as follows:
 ```
 php client.php /path/to/file.pdf
 ```
+To send the request to a remote API endpoint (make sure to use HTTPS, this
+sends the entire file BASE64-encoded!), you can use
+```
+php client.php https://my-endpoint.com/validate /path/to/file.pdf
+```
 
 ## Building the Docker image
 
