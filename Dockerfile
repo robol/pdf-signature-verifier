@@ -5,5 +5,5 @@ COPY ./cert.pem /cert.pem
 
 EXPOSE 8081
 
-CMD PSV_PORT=8081 PSV_CERT_PATH=/cert.pem \
+CMD PSV_PORT=8081 PSV_CERT_PATH=/ \
     java -cp /server.jar it.unipi.dm.pdfsignatureverifier.Server

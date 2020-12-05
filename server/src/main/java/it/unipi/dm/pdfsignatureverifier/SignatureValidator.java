@@ -5,6 +5,8 @@ import com.itextpdf.text.pdf.AcroFields;
 import com.itextpdf.text.pdf.PdfName;
 import com.itextpdf.text.pdf.PdfDictionary;
 import com.itextpdf.text.pdf.security.PdfPKCS7;
+
+import java.io.File;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import com.itextpdf.text.pdf.security.CertificateVerification;
@@ -25,61 +27,64 @@ import org.slf4j.LoggerFactory;
 public class SignatureValidator {
 
   private BouncyCastleProvider provider;
-  private KeyStore ks;
+  private KeyStore ks = null;
   private final Logger logger = LoggerFactory.getLogger(SignatureValidator.class);
 
+  /**
+   * Validate signatures in PDF files.
+   *
+   * @param cert_path is a folder containing additional certificates that should
+   *                  be trusted by the validator. If cert_path is null, then no
+   *                  additional certificates are loaded.
+   */
   public SignatureValidator(String cert_path) {
     provider = new BouncyCastleProvider();
     Security.addProvider(provider);
 
-    loadCertificate(cert_path);
+    if (initializeKeystore()) {
+      try {
+        loadCertificates(cert_path);
+      } catch (Exception e) {
+        logger.error("An error was encountered while loading the custom certificates");
+        System.out.println(e);
+      }
+    }
   }
 
-  private void loadCertificate(String path) {
-    try {
-      ks = KeyStore.getInstance(KeyStore.getDefaultType());
-      ks.load(null, null);
-    } catch (Exception e) {
-      logger.error("Cannot open the certificate store");
-      return;
+  private boolean initializeKeystore() {
+    if (ks == null) {
+      try {
+        ks = KeyStore.getInstance(KeyStore.getDefaultType());
+        ks.load(null, null);
+      } catch (Exception e) {
+        logger.error("Cannot open the certificate store");
+        return false;
+      }
     }
 
+    return true;
+  }
+
+  private void loadCertificates(String path) throws Exception {
     if (path == null) {
       return;
     }
     else {
-      logger.info(String.format("Loading custom certificate: %s",  path));
+      logger.info(String.format("Loading custom certificate from %s",  path));
     }
 
-    CertificateFactory fact;
-    try {
-      fact = CertificateFactory.getInstance("X.509");
-    } catch (Exception e) {
-      logger.error("Unable to create the Certificate Factor");
-      return;
-    }
+    File certFolder = new File(path);
+    String[] files = certFolder.list();
 
-    InputStream crt_stream;
-    try {
-      crt_stream = new FileInputStream(path);
-    } catch (Exception e) {
-      logger.error(String.format("Unable to load the certificate: %s", path));
-      return;
-    }
+    CertificateFactory fact = CertificateFactory.getInstance("X.509");
 
-    Certificate crt;
-    try {
-      crt = fact.generateCertificate(crt_stream);
-    } catch (Exception e) {
-      logger.error(String.format("Unable to generate a certificate from %s", path));
-      return;
-    }
-
-    try {
-      ks.setCertificateEntry("unipi", crt);
-    } catch (Exception e) {
-      logger.error("Unable to store new certificate into the KeyStore");
-      return;
+    for (File f : certFolder.listFiles()) {
+      if (f.getName().endsWith(".pem")) {
+        logger.info("Loading certificate: " + f.getName());
+        InputStream crt_stream = new FileInputStream(f);
+        Certificate crt = fact.generateCertificate(crt_stream);
+        ks.setCertificateEntry("psv-custom-" + f, crt);
+      }
     }
   }
 
@@ -100,27 +105,17 @@ public class SignatureValidator {
 
     for (String name : signatureNames) {
       ValidationResult result = new ValidationResult();
-      result.valid = false;
-
       PdfDictionary d = acroFields.getSignatureDictionary(name);
 
-      for (PdfName key : d.getKeys()) {
-        if (key.equals(PdfName.NAME)) {
-          result.name = d.get(key).toString();
-        }
-        if (key.equals(PdfName.M)) {
-          result.date = d.get(key).toString();
-        }
-      }
-
       PdfPKCS7 pk = acroFields.verifySignature(name);
-      Calendar cal = pk.getSignDate();
+      result.date = pk.getSignDate();
+      result.name = pk.getSignName();
       Certificate pkc[] = pk.getCertificates();
 
       result.valid = true;
       for (Certificate c : pkc) {
         List<VerificationException> errors =
-          CertificateVerification.verifyCertificates(pkc, ks, cal);
+          CertificateVerification.verifyCertificates(pkc, ks, result.date);
         result.valid = result.valid && (errors.size() == 0);
       }
 

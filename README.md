@@ -45,3 +45,15 @@ be used as follows:
 ```
 php client.php /path/to/file.pdf
 ```
+
+## Building the Docker image
+
+To build the docker image first compile the server, running 
+```
+cd server && mvn package
+```
+and then run
+```
+sudo docker build -t pdf-signature-verifier .
+```
+or use the provided ```docker-compose.yml``` file. 

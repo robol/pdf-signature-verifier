@@ -1,11 +1,11 @@
 package it.unipi.dm.pdfsignatureverifier;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Calendar;
 
 public class ValidationResult {
 
   public String name;
-  public String date;
+  public Calendar date;
   public boolean valid;
 
 }
