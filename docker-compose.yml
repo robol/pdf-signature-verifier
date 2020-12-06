@@ -3,6 +3,8 @@ version: '2.1'
 services:
   pdfsignatureverifier:
     image: robol/pdfsignatureverifier
+    volumes:
+      - ./certs:/certs
     ports:
       - 8081:8081
 

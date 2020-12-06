@@ -46,8 +46,8 @@ and then it can be run with
 mvn exec:java
 ```
 or ```java -cp target/pdfsignatureverifier-1.0-jar-with-dependencies.jar it.unipi.dm.pdfsignatureverifier.Server```
-The environment variable ```PSV_CERT_PATH``` is used to read an additional certificate in PEM format, 
-to be used for the validation. 
+The environment variable ```PSV_CERT_PATH``` is used to read additional certificates in PEM format, which are looked
+for in the specified folder, and will be used for the validation. 
 
 ## Using the PHP client
 
@@ -72,5 +72,10 @@ and then run
 ```
 sudo docker build -t pdf-signature-verifier .
 ```
-or use the provided ```docker-compose.yml``` file, which pulls the image
-from Docker Hub. 
+You may want to specify the environment variable ```PSV_CERT_PATH``` to
+load additional certificates. 
+
+An easier alternative, the provided ```docker-compose.yml``` file can be used, 
+which pulls the image from Docker Hub. By default, this includes the local 
+folder ```./certs/``` as a volume mounted on ```/certs/``` inside the 
+container, which is used to provide additional certificates. 
