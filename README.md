@@ -13,14 +13,25 @@ to check. The response is again in JSON format, as follows:
 ```
 [{
    "name": "John Smith",
-   "date": "...",
+   "date": timestamp,
+   "DN": "C=UK,O=My Organization,CN=John Smith,SERIALNUMBER=1421348dfg7",
+   "issuerDN": "CN=...",
+   "notBefore": timestamp,
+   "notAfter": timestamp,
    "valid": "true"
 }, {
-   "name": "Betty White",
-   "date": "...",
+   "name": "Elizabeth White",
+   "date": timestamp,
+   "DN": "C=US,O=Some other Company,CN=Elizabeth White,SERIALNUMBER=quuuseiFish1",
+   "issuerDN": "CN=...",
+   "notBefore": timestamp,
+   "notAfter: timestamp,
    "valid": "false"
 }]
 ```
+All the timestamps above are UNIX timestamps, as integer numbers. DN is the DN of the
+signing entity, while issuerDN contains the DN of the entity that issued that 
+certificate. 
 The endpoint the validates the PDF is ```/validate```, and the service is open
 on the port 8081. 
 
@@ -61,4 +72,5 @@ and then run
 ```
 sudo docker build -t pdf-signature-verifier .
 ```
-or use the provided ```docker-compose.yml``` file. 
+or use the provided ```docker-compose.yml``` file, which pulls the image
+from Docker Hub. 

@@ -1,6 +1,7 @@
 package it.unipi.dm.pdfsignatureverifier;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class ValidationResult {
 
@@ -13,6 +14,26 @@ public class ValidationResult {
    * The timestamp for the signature
    */
   public Calendar date;
+
+  /**
+   * DN field of the signing certificate
+   */
+  public String DN;
+
+  /**
+   * DN of the issuer of the signing certificate
+   */
+  public String issuerDN;
+
+  /**
+   * Date after which the certificate can be considered valid.
+   */
+  public Date notBefore;
+
+  /**
+   * Date before which the certificate can be considered valid.
+   */
+  public Date notAfter;
 
   /**
    * A boolean value indicating if the signature could be verified or not. If this is false,

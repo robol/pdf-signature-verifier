@@ -11,6 +11,7 @@ import com.itextpdf.text.pdf.security.VerificationException;
 import java.security.KeyStore;
 import java.security.Security;
 import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.LinkedList;
 import java.io.InputStream;
@@ -113,6 +114,14 @@ public class SignatureValidator {
           CertificateVerification.verifyCertificates(pkc, ks, result.date);
         result.valid = result.valid && (errors.size() == 0);
       }
+
+      X509Certificate crt = pk.getSigningCertificate();
+
+      result.DN = crt.getSubjectDN().toString();
+      result.issuerDN = crt.getIssuerDN().toString();
+
+      result.notBefore = crt.getNotBefore();
+      result.notAfter = crt.getNotAfter();
 
       results.add(result);
     }
