@@ -4,43 +4,71 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static spark.Spark.*;
 import spark.Request;
 import spark.Response;
+
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.List;
 import java.lang.System;
-import java.io.InputStream;
-import javax.servlet.http.Part;
-import javax.servlet.MultipartConfigElement;
 import java.io.ByteArrayInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.Spark;
 
 public class Server {
 
   private final static Logger logger = LoggerFactory.getLogger(Server.class);
 
-  private static SignatureValidator validator;
+  private SignatureValidator validator;
 
   public static void main(String[] args) {
+    Server s = new Server();
+  }
+
+  public Server() {
     validator = new SignatureValidator(System.getenv("PSV_CERT_PATH"));
     String port_value = System.getenv("PSV_PORT");
 
     // Setup port to listen on
     logger.info(
-      String.format("Starting on port = %s",
-        port_value != null ? port_value : "8081"
-      )
+            String.format("Starting on port = %s",
+                    port_value != null ? port_value : "8081"
+            )
     );
 
     port(port_value != null ? Integer.parseInt(port_value, 10) : 8081);
 
-    get("/", (req, res) -> Server.index(req, res));
-    post("/validate", (req, res) -> Server.validate(req, res));
+    Spark.staticFiles.location("/assets");
+
+    get("/", (req, res) -> this.index(req, res));
+    get("/validate", (req, res) -> this.validate_home_page(req, res));
+    post("/validate", (req, res) -> this.validate(req, res));
   }
 
-  public static String index(Request req, Response res) {
+  public String index(Request req, Response res) {
     return "This is the PDF Signature Validator server";
   }
 
-  public static String validate(Request req, Response res) {
+  public byte[] validate_home_page(Request req, Response res) {
+    ClassLoader loader = getClass().getClassLoader();
+
+    File templateFile = new File(
+      loader.getResource("templates/index.html").getFile()
+    );
+
+    try {
+      byte[] template = Files.readAllBytes(templateFile.toPath());
+      return template;
+    }
+    catch (Exception e) {
+      logger.error("Unable to read template file");
+      logger.error(e.toString());
+    }
+
+    return "Cannot read template".getBytes(StandardCharsets.UTF_8);
+  }
+
+  public String validate(Request req, Response res) {
     ValidationInput input = ValidationInput.fromJSON(req.body());
 
     if (input == null) {
