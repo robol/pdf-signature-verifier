@@ -5,9 +5,8 @@ import static spark.Spark.*;
 import spark.Request;
 import spark.Response;
 
-import java.io.File;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.List;
 import java.lang.System;
 import java.io.ByteArrayInputStream;
@@ -52,12 +51,10 @@ public class Server {
   public byte[] validate_home_page(Request req, Response res) {
     ClassLoader loader = getClass().getClassLoader();
 
-    File templateFile = new File(
-      loader.getResource("templates/index.html").getFile()
-    );
-
     try {
-      byte[] template = Files.readAllBytes(templateFile.toPath());
+      InputStream templateStream = loader.getResource(
+              "templates/validate.html").openStream();
+      byte[] template = templateStream.readAllBytes();
       return template;
     }
     catch (Exception e) {
