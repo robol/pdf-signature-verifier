@@ -1,4 +1,4 @@
-FROM java:8
+FROM java:9
 
 RUN mkdir /certs
 COPY ./server/target/pdfsignatureverifier-1.0-jar-with-dependencies.jar /server.jar
