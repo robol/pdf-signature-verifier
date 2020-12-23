@@ -47,6 +47,11 @@ function validate_file() {
 
     jQuery.post(window.location.href, payload, (res) => {
       var response = jQuery("<ul class='signatures'>")
+
+      if (res.length == 0) {
+        jQuery(response).append('Nessuna firma trovata nel documento');
+      }
+
       jQuery(res).each((idx, sig) => {
         jQuery(response).append(`<li class="signature">
           <strong>Nome:</strong> ${sig.name}<br>
