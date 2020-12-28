@@ -29,7 +29,11 @@ h1 {
 }
 
 ul.signatures {
+}
+
+li.response {
   margin-top: 20px;
+  list-style-type: none;
 }
 
 li.signature {

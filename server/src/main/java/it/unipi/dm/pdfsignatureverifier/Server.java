@@ -41,7 +41,18 @@ public class Server {
 
     get("/", (req, res) -> this.index(req, res));
     get("/validate", (req, res) -> this.validate_home_page(req, res));
-    post("/validate", (req, res) -> this.validate(req, res));
+
+    post("/validate",  (req, res) -> {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "*");
+        return this.validate(req, res);
+    });
+
+    options("/validate", (req, res) -> {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "*");
+      return "[]";
+    });
   }
 
   public String index(Request req, Response res) {
