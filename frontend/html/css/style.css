@@ -1,0 +1,45 @@
+#container {
+  max-width: 800px;
+  margin: auto;
+}
+
+h1 {
+  font-family: Roboto;
+  font-size: 1.4em;
+}
+
+#file-loader {
+  display: none;
+}
+
+#file-label {
+  margin: auto;
+  margin-top: 50px;
+  width: 90%;
+  max-width: 400px;
+  display: block;
+  background-color: #eaeaea;
+  outline-offset: -10px;
+  outline: 2px dashed black;
+  padding: 20px;
+  text-align: center;
+  vertical-align: middle;
+  padding-bottom: 50px;
+  padding-top: 50px;
+}
+
+ul.signatures {
+}
+
+li.response {
+  margin-top: 20px;
+  list-style-type: none;
+}
+
+li.signature {
+  list-style-type: none;
+  background-color: #b5e7a0;
+  padding: 6px;
+  margin: 12px;
+  border-radius: 6px;
+}

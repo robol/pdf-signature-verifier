@@ -30,22 +30,17 @@ public class Server {
 
     // Setup port to listen on
     logger.info(
-            String.format("Starting on port = %s",
-                    port_value != null ? port_value : "8081"
-            )
+      String.format("Starting on port = %s",
+              port_value != null ? port_value : "8081"
+      )
     );
 
     port(port_value != null ? Integer.parseInt(port_value, 10) : 8081);
 
-    Spark.staticFiles.location("/assets");
-
-    get("/", (req, res) -> this.index(req, res));
-    get("/validate", (req, res) -> this.validate_home_page(req, res));
-
     post("/validate",  (req, res) -> {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "*");
-        return this.validate(req, res);
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "*");
+      return this.validate(req, res);
     });
 
     options("/validate", (req, res) -> {
@@ -53,27 +48,6 @@ public class Server {
       res.header("Access-Control-Allow-Headers", "*");
       return "[]";
     });
-  }
-
-  public String index(Request req, Response res) {
-    return "This is the PDF Signature Validator server";
-  }
-
-  public byte[] validate_home_page(Request req, Response res) {
-    ClassLoader loader = getClass().getClassLoader();
-
-    try {
-      InputStream templateStream = loader.getResource(
-              "templates/validate.html").openStream();
-      byte[] template = templateStream.readAllBytes();
-      return template;
-    }
-    catch (Exception e) {
-      logger.error("Unable to read template file");
-      logger.error(e.toString());
-    }
-
-    return "Cannot read template".getBytes(StandardCharsets.UTF_8);
   }
 
   public String validate(Request req, Response res) {

@@ -1,7 +1,7 @@
-FROM java:9
+FROM openjdk:17
 
 RUN mkdir /certs
-COPY ./server/target/pdfsignatureverifier-1.0-jar-with-dependencies.jar /server.jar
+COPY ./target/pdfsignatureverifier-1.0-jar-with-dependencies.jar /server.jar
 
 EXPOSE 8081
 

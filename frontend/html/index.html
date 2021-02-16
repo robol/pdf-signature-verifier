@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PDF Signature Verifier</title>
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+    <script src="js/validate.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+  </head>
+
+  <body>
+    <div id="container">
+      <h1>Verifica firme digitali</h1>
+
+      <div id="app">
+        <div id="message" v-if="message">
+          {{ message }}
+        </div>
+
+        <input type="file" id="file-loader" v-on:change="validateFileFromInput">
+        <label id="file-label" for="file-loader" ondragleave="onFileDragLeave(event)" ondrop="onFileDrop(event)" ondragover="onFileDragOver(event)">
+          {{ fileUploadMessage }}
+        </label>
+
+        <ul id="responses">
+          <li class="response" v-for="file in validatedFiles">
+            <i class="fas fa-file"></i> <strong>{{ file.name }}</strong>
+            <i class="fas fa-times" v-on:click="removeFile(file)"></i>
+            <ul class="signatures">
+              <li class="signature" v-for="sig in file.signatures">
+                <strong>Nome:</strong> {{ sig.name }}<br>
+                <strong>Data:</strong> {{ formatDate(sig.date) }}<br>
+                <strong>DN:</strong> {{ sig.DN }}<br>
+                <strong>DN di chi ha emesso il certificato:</strong> {{ sig.issuerDN }}<br>
+                <strong>Valido da:</strong> {{ formatDate(sig.notBefore) }}<br>
+                <strong>Valido fino a:</strong> {{ formatDate(sig.notAfter) }}
+              </li>
+            </ul>
+            <span v-if="file.signatures.length == 0">
+              Nessuna firma trovata nel documento
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </body>
+
+</html>

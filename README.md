@@ -70,7 +70,7 @@ cd server && mvn package
 ```
 and then run
 ```
-sudo docker build -t pdf-signature-verifier .
+sudo docker build -t robol/pdf-signature-verifier server
 ```
 You may want to specify the environment variable ```PSV_CERT_PATH``` to
 load additional certificates. 
