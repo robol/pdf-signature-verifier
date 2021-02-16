@@ -1,5 +1,31 @@
 var app = null;
 
+const PSV_MESSAGES = {
+  "PSV_UPLOAD_FILE": "Selezionare un file da caricare.",
+  "PSV_DRAGGING_FILE": "Rilasciare qui il file da caricare...",
+  "PSV_NO_FILE": "Nessun file selezionato."
+};
+
+async function onFileDrop(evt) {
+  var files = evt.dataTransfer.files;
+
+  Array.from(files).forEach(async (f) => {
+    await app.validateFile(f);
+  });
+
+  evt.preventDefault();
+}
+
+function onFileDragOver(evt) {
+  app.fileUploadMessage = PSV_MESSAGES["PSV_DRAGGING_FILE"];
+  evt.preventDefault();
+}
+
+function onFileDragLeave(evt) {
+  app.fileUploadMessage = PSV_MESSAGES["PSV_UPLOAD_FILE"];
+  evt.preventDefault();
+}
+
 function  formatDate(d) {
     return new Date(d).toLocaleDateString(undefined, {
       day: 'numeric',
@@ -19,7 +45,7 @@ async function readFile(filename) {
   });
 }
 
-async function validateFile() {
+async function validateFileFromInput() {
   const input = document.getElementById("file-loader");
 
   if (input.files.length == 0) {
@@ -27,7 +53,12 @@ async function validateFile() {
     return;
   }
 
-  const file  = input.files[0];
+  const file = input.files[0];
+
+  return await validateFile(file);
+}
+
+async function validateFile(file) {
   this.fileUploadMessage = `Uploading: ${file.name} ...`;
 
   let data = await readFile(file);
@@ -47,8 +78,8 @@ async function validateFile() {
     signatures: await res.json()
   };
 
-  this.validatedFiles.push(signatures);
-  this.fileUploadMessage = "Selezionare un file da caricare";
+  app.validatedFiles.push(signatures);
+  app.fileUploadMessage = PSV_MESSAGES["PSV_UPLOAD_FILE"];
 }
 
 async function removeFile(obj) {
@@ -70,5 +101,5 @@ document.addEventListener("DOMContentLoaded", function(e) {
     }
   });
 
-  app.fileUploadMessage = "Selezionare un file da caricare";
+  app.fileUploadMessage = PSV_MESSAGES["PSV_UPLOAD_FILE"];
 });

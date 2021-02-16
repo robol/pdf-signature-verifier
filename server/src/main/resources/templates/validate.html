@@ -18,8 +18,8 @@
           {{ message }}
         </div>
 
-        <input type="file" id="file-loader" v-on:change="validateFile">
-        <label id="file-label" for="file-loader">
+        <input type="file" id="file-loader" v-on:change="validateFileFromInput">
+        <label id="file-label" for="file-loader" ondragleave="onFileDragLeave(event)" ondrop="onFileDrop(event)" ondragover="onFileDragOver(event)">
           {{ fileUploadMessage }}
         </label>
 
