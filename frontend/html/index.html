@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8"/>
     <title>PDF Signature Verifier</title>
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
@@ -28,13 +29,14 @@
             <i class="fas fa-file"></i> <strong>{{ file.name }}</strong>
             <i class="fas fa-times" v-on:click="removeFile(file)"></i>
             <ul class="signatures">
-              <li class="signature" v-for="sig in file.signatures">
+              <li class="signature" v-for="sig in file.signatures" v-bind:class="{ invalid: !sig.valid }">
+                <span v-if="! sig.valid"><strong>Firma non valida! </strong><br></span>
                 <strong>Nome:</strong> {{ sig.name }}<br>
                 <strong>Data:</strong> {{ formatDate(sig.date) }}<br>
                 <strong>DN:</strong> {{ sig.DN }}<br>
                 <strong>DN di chi ha emesso il certificato:</strong> {{ sig.issuerDN }}<br>
                 <strong>Valido da:</strong> {{ formatDate(sig.notBefore) }}<br>
-                <strong>Valido fino a:</strong> {{ formatDate(sig.notAfter) }}
+                <strong>Valido fino a:</strong> {{ formatDate(sig.notAfter) }}                
               </li>
             </ul>
             <span v-if="file.signatures.length == 0">

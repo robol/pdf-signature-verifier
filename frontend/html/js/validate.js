@@ -1,7 +1,7 @@
 var app = null;
 
 const PSV_MESSAGES = {
-  "PSV_UPLOAD_FILE": "Selezionare un file da caricare.",
+  "PSV_UPLOAD_FILE": "Selezionare uno o più file da caricare.",
   "PSV_DRAGGING_FILE": "Rilasciare qui il file da caricare...",
   "PSV_NO_FILE": "Nessun file selezionato."
 };
@@ -27,11 +27,11 @@ function onFileDragLeave(evt) {
 }
 
 function  formatDate(d) {
-    return new Date(d).toLocaleDateString(undefined, {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
+  return new Date(d).toLocaleDateString(undefined, {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
 }
 
 async function readFile(filename) {

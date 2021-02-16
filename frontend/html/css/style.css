@@ -43,3 +43,7 @@ li.signature {
   margin: 12px;
   border-radius: 6px;
 }
+
+li.signature.invalid {
+  background-color: #eb7c68;
+}
