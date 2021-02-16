@@ -12,6 +12,15 @@ h1 {
   display: none;
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 #file-label {
   margin: auto;
   margin-top: 50px;

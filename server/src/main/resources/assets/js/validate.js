@@ -51,6 +51,10 @@ async function validateFile() {
   this.fileUploadMessage = "Selezionare un file da caricare";
 }
 
+async function removeFile(obj) {
+  this.validatedFiles = this.validatedFiles.filter((i) => i !== obj);
+}
+
 document.addEventListener("DOMContentLoaded", function(e) {
   app = new Vue({
     el: '#app',
@@ -61,7 +65,8 @@ document.addEventListener("DOMContentLoaded", function(e) {
     },
     methods: {
       validateFile: validateFile,
-      formatDate: formatDate
+      formatDate: formatDate,
+      removeFile: removeFile
     }
   });
 
