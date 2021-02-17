@@ -19,9 +19,14 @@
           {{ message }}
         </div>
 
-        <input type="file" id="file-loader" v-on:change="validateFileFromInput">
-        <label id="file-label" for="file-loader" ondragleave="onFileDragLeave(event)" ondrop="onFileDrop(event)" ondragover="onFileDragOver(event)">
-          {{ fileUploadMessage }}
+        <input type="file" id="file-loader" v-on:change="validateFileFromInput" multiple>
+        <label id="file-label" for="file-loader" v-bind:class="{ ondrag: dragging }"
+          ondragleave="onFileDragLeave(event)" ondrop="onFileDrop(event)" ondragover="onFileDragOver(event)">
+          <i class="fas fa-upload fa-3x"></i>
+          <br>
+          <div id="fileUploadMessage">
+            {{ fileUploadMessage }}
+          </div>
         </label>
 
         <ul id="responses">

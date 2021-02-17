@@ -1,7 +1,7 @@
 var app = null;
 
 const PSV_MESSAGES = {
-  "PSV_UPLOAD_FILE": "Selezionare uno o più file da caricare.",
+  "PSV_UPLOAD_FILE": "Selezionare uno o più file da caricare, o  trascinarli su quest'area.",
   "PSV_DRAGGING_FILE": "Rilasciare qui il file da caricare...",
   "PSV_NO_FILE": "Nessun file selezionato."
 };
@@ -18,11 +18,13 @@ async function onFileDrop(evt) {
 
 function onFileDragOver(evt) {
   app.fileUploadMessage = PSV_MESSAGES["PSV_DRAGGING_FILE"];
+  app.dragging = true;
   evt.preventDefault();
 }
 
 function onFileDragLeave(evt) {
   app.fileUploadMessage = PSV_MESSAGES["PSV_UPLOAD_FILE"];
+  app.dragging = false;
   evt.preventDefault();
 }
 
@@ -53,9 +55,9 @@ async function validateFileFromInput() {
     return;
   }
 
-  const file = input.files[0];
-
-  return await validateFile(file);
+  Array.from(input.files).forEach(async (f) => {
+    await app.validateFile(f);
+  });
 }
 
 async function validateFile(file) {
@@ -92,7 +94,8 @@ document.addEventListener("DOMContentLoaded", function(e) {
     data: {
       fileUploadMessage: null,
       message: null,
-      validatedFiles: []
+      validatedFiles: [],
+      dragging: false
     },
     methods: {
       validateFile: validateFile,
