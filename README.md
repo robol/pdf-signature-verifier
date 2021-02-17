@@ -37,6 +37,17 @@ on the port 8081.
 
 ## Running the server
 
+The recommended way to run the server is with Docker, using the provided
+```docker-compose.yml``` file. With Docker installed, you can just run 
+```
+docker-compose up
+```
+and point your browser to ```http://localhost:8081/```. You may want to 
+add some certificates in the ```certs``` folder that is created at the 
+first Docker start. 
+
+## Running the server manually
+
 To build the server you need Maven, and then to run 
 ```
 cd server && mvn package
