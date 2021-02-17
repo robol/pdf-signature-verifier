@@ -8,6 +8,7 @@ const PSV_MESSAGES = {
 
 async function onFileDrop(evt) {
   var files = evt.dataTransfer.files;
+  app.dragging = false;
 
   Array.from(files).forEach(async (f) => {
     await app.validateFile(f);
@@ -26,6 +27,10 @@ function onFileDragLeave(evt) {
   app.fileUploadMessage = PSV_MESSAGES["PSV_UPLOAD_FILE"];
   app.dragging = false;
   evt.preventDefault();
+}
+
+function onFileDragEnd(evt) {
+  app.dragging = false;
 }
 
 function  formatDate(d) {
